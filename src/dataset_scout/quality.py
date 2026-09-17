@@ -9,9 +9,16 @@ weighted by the configuration, times 100.
   samples, 0.5 if both groups exist but are smaller, 0 otherwise.
   Baseline = not a treated sample and not a non-wild-type genotype, so a study
   comparing young wild-type mice with old transgenic mice is not mistaken for a
-  clean aging design.
+  clean aging design. Samples that are single cells are not counted as replicates:
+  three hundred cells of one mouse are not three hundred animals.
+- target_fit: how much of the study is made of the material the question asks
+  about (`target.cell_types` and `target.tissues`). Isolated microglia answer a
+  microglia question; whole brain tissue only contains them.
 - data_type_fit: from the configuration (e.g. bulk RNA-seq 1.0, microarray 0.6)
 - traceability: 0.5 for a linked publication + 0.5 for raw data being referenced
+
+Samples of an organism outside `scope.organisms` are left out of every count:
+the human samples of a mixed series do not answer a question about mice.
 
 Weights and thresholds are judgment calls; they live in the YAML so they can
 be discussed and tuned with the scientists who will use the ranking.
@@ -39,12 +46,16 @@ FLAG_DESCRIPTIONS: dict[str, str] = {
     "pooled_samples": "Samples are pools of animals or donors",
     "cell_line": "Uses cell lines",
     "ipsc_or_organoid": "Uses iPSC-derived cells or organoids",
+    "off_target_material": "Material is mostly not what the question asks about",
     "single_cell": "Single-cell or single-nucleus data",
+    "single_cell_from_text": "Single-cell inferred from the summary text only",
     "under_replicated": "Young and old groups exist but are below the minimum size",
+    "groups_are_cells": "Young and old counts come from single cells, not from animals",
     "genotype_mixed": "Includes non-wild-type genotypes",
     "treatment_present": "Includes treated samples",
     "no_publication": "No linked publication",
     "mixed_organisms": "More than one organism",
+    "other_organism_samples": "Some samples are from an organism out of scope and were not counted",
     "multi_assay": "Combines several assay types",
     "few_samples": "Fewer than 4 expression samples",
     "non_expression_samples": "Some samples are not expression profiles",
@@ -63,12 +74,16 @@ FLAG_LABELS: dict[str, str] = {
     "pooled_samples": "pooled samples",
     "cell_line": "cell line",
     "ipsc_or_organoid": "iPSC or organoid",
+    "off_target_material": "off-target material",
     "single_cell": "single-cell",
+    "single_cell_from_text": "single-cell from text",
     "under_replicated": "small groups",
+    "groups_are_cells": "groups are cells",
     "genotype_mixed": "mutant genotypes",
     "treatment_present": "treated samples",
     "no_publication": "no linked paper",
     "mixed_organisms": "several organisms",
+    "other_organism_samples": "samples of another organism",
     "multi_assay": "several assays",
     "few_samples": "under 4 samples",
     "non_expression_samples": "non-expression samples",
@@ -89,6 +104,7 @@ QUALITY_COLUMNS = [
     "age_max_months",
     "sexes",
     "design_fit",
+    "target_fit",
     "data_type_fit",
     "traceability",
     "score",
@@ -112,6 +128,39 @@ def _baseline_mask(group: pd.DataFrame) -> pd.Series:
     return (genotype_ok & treatment_ok).astype(bool)
 
 
+def _target_fit(expression: pd.DataFrame, study: pd.Series, config: ScoutConfig) -> float:
+    """Mean share of the target material across the samples of a study (0 to 1).
+
+    Isolated target cells are the material the question asks about; cultured cells drift
+    away from it; single-cell data of a tissue that contains the target can be filtered
+    down to it; whole tissue only dilutes it. A configuration without `target.cell_types`
+    does not judge the material, so every sample counts fully.
+    """
+    targets = set(config.target_cell_types)
+    if not targets or not len(expression):
+        return 1.0
+    value = config.target_fit
+    cell_type = expression["cell_type"].fillna("").astype(str).str.lower()
+    tissue = expression["tissue"].fillna("").astype(str).str.lower()
+    sample_type = expression["sample_type"].fillna("").astype(str)
+    is_target = cell_type.isin(targets)
+    other_cell_type = (cell_type != "") & ~is_target
+    cultured = sample_type == "primary culture"
+    artificial = sample_type.isin(["cell line", "iPSC-derived", "organoid"])
+    in_target_tissue = tissue.isin(set(config.target_tissues))
+    single_cell = "single_cell" in str(study["data_type_flags"])
+
+    fit = pd.Series(value["off_target"], index=expression.index, dtype=float)
+    # Whole tissue that contains the target: the signal is there, diluted by every other cell.
+    fit[in_target_tissue & ~other_cell_type] = (
+        value["single_cell_of_target_tissue"] if single_cell else value["bulk_target_tissue"]
+    )
+    fit[is_target & cultured] = value["cultured_target_cells"]
+    fit[is_target & ~cultured & ~artificial] = value["isolated_target_cells"]
+    fit[artificial] = value["off_target"]
+    return float(fit.mean())
+
+
 def _tier(score: float, config: ScoutConfig) -> str:
     if score >= config.ready_threshold:
         return TIER_READY
@@ -128,11 +177,17 @@ def score_study(study: pd.Series, group: pd.DataFrame, config: ScoutConfig) -> d
     expression = group[group["is_expression"].astype(bool)] if all_samples else group
     if all_samples and len(expression) < all_samples:
         flags.append("non_expression_samples")
+    if len(expression) and config.scope_organisms:
+        # A question about mice is not answered by the human samples of a mixed series.
+        organism_in_scope = expression["organism"].isna() | expression["organism"].isin(config.scope_organisms)
+        if not organism_in_scope.all():
+            flags.append("other_organism_samples")
+            expression = expression[organism_in_scope]
     n = len(expression)
 
     if n == 0:
         pct_age = pct_sex = pct_bio = pct_background = 0.0
-        n_young = n_old = 0
+        n_young = n_old = n_young_cells = n_old_cells = 0
         sexes: set[str] = set()
         flags.append("no_samples_retrieved")
         age_min = age_max = None
@@ -145,8 +200,12 @@ def score_study(study: pd.Series, group: pd.DataFrame, config: ScoutConfig) -> d
         pct_bio, pct_background = _share(has_bio), _share(has_background)
 
         baseline = expression[_baseline_mask(expression)]
-        n_young = int((baseline["age_group"] == "young").sum())
-        n_old = int((baseline["age_group"] == "old").sum())
+        # One cell is not one animal: a plate of 300 cells from one mouse is one replicate.
+        animals = baseline[~baseline["is_cell_level"].astype("boolean").fillna(False).astype(bool)]
+        n_young = int((animals["age_group"] == "young").sum())
+        n_old = int((animals["age_group"] == "old").sum())
+        n_young_cells = int((baseline["age_group"] == "young").sum())
+        n_old_cells = int((baseline["age_group"] == "old").sum())
         sexes = set(expression["sex"].dropna())
         months = expression["age_months"].dropna()
         age_min = float(months.min()) if len(months) else None
@@ -184,14 +243,21 @@ def score_study(study: pd.Series, group: pd.DataFrame, config: ScoutConfig) -> d
 
     if n_young >= k and n_old >= k:
         design_fit = 1.0
-    elif n_young >= 1 and n_old >= 1:
+    elif n_young_cells >= 1 and n_old_cells >= 1:
         design_fit = 0.5
-        flags.append("under_replicated")
+        counted_cells = n_young_cells > n_young or n_old_cells > n_old
+        flags.append("groups_are_cells" if counted_cells else "under_replicated")
     else:
         design_fit = 0.0
 
+    target_fit = _target_fit(expression, study, config) if n else 0.0
+    if n and config.target_cell_types and target_fit < 0.5:
+        flags.append("off_target_material")
+
     if "single_cell" in study["data_type_flags"]:
         flags.append("single_cell")
+    if "single_cell_from_text" in study["data_type_flags"]:
+        flags.append("single_cell_from_text")
     if "multi_assay" in study["data_type_flags"]:
         flags.append("multi_assay")
     if not study["pubmed_ids"]:
@@ -205,6 +271,7 @@ def score_study(study: pd.Series, group: pd.DataFrame, config: ScoutConfig) -> d
     score = 100 * (
         weights["metadata_completeness"] * completeness
         + weights["design_fit"] * design_fit
+        + weights["target_fit"] * target_fit
         + weights["data_type_fit"] * data_type_fit
         + weights["traceability"] * traceability
     )
@@ -225,6 +292,7 @@ def score_study(study: pd.Series, group: pd.DataFrame, config: ScoutConfig) -> d
         "age_max_months": age_max,
         "sexes": ", ".join(sorted(sexes)) if sexes else None,
         "design_fit": design_fit,
+        "target_fit": round(target_fit, 4),
         "data_type_fit": data_type_fit,
         "traceability": traceability,
         "score": score,

@@ -118,7 +118,7 @@ FIELDS: tuple[FieldSpec, ...] = (
 
 
 def sheet_path(config: ScoutConfig) -> Path:
-    return config.validation_dir / "review_sheet.xlsx"
+    return config.validation_dir / config.review_sheet
 
 
 def results_path(config: ScoutConfig) -> Path:
@@ -452,6 +452,8 @@ def refresh_validation(config: ScoutConfig, database: Path) -> dict[str, Any] | 
         "tool_version": __version__,
         "sheet": path.as_posix(),
         "sheet_sha256": _sha256(path),
+        # Who filled the sheet in. An accuracy figure means nothing without it.
+        "reviewer": config.reviewer,
         "rows_in_sheet": int(len(sheet)),
         "rows_reviewed": reviewed_rows,
         "rows_not_in_run": not_found,

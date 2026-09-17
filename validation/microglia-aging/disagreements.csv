@@ -1,0 +1,60 @@
+gsm,field,outcome,reviewer_value,program_value,raw_evidence,reviewer_notes
+GSM2093850,age_group,missed,developmental,,,P12; one cell per sample
+GSM2588519,age_group,wrong,young,developmental,6 weeks,"6 weeks is a young adult, not developmental"
+GSM10005250,age_group,missed,old,,,18M only in the sample title
+GSM5129702,age_group,missed,middle,,,age under 'time (month)'
+GSM6528216,age_group,missed,middle,,,'Middle_aged' written in the treatment field
+GSM6637188,age_group,wrong,young,developmental,1m 16d,'exit age: 1m 16d'
+GSM6661557,age_group,missed,middle,,,age written in the treatment field
+GSM2913865,age_group,wrong,adult,young,adult (at least 3 months),'adult (at least 3 months)'
+GSM9533400,age_group,invented,unknown,old,"old, young","age group field says 'old, young'"
+GSM9097224,age_group,missed,young,,,
+GSM7103861,age_group,wrong,young,developmental,6 week old,6 weeks
+GSM9867567,age_months,wrong,31.5,24.0,2y7m14d,age written as 2y7m14d
+GSM2093850,age_months,missed,0.39,,,P12; one cell per sample
+GSM10005250,age_months,missed,18,,,18M only in the sample title
+GSM5129702,age_months,missed,12,,,age under 'time (month)'
+GSM73016,age_months,missed,22,,"Mouse brain, Aged, 4hr post saline ip injection","every characteristic on one line, separated by semicolons"
+GSM6637188,age_months,wrong,1.53,1.0,1m 16d,'exit age: 1m 16d'
+GSM6661557,age_months,missed,9,,,age written in the treatment field
+GSM9097224,age_months,missed,6,,,
+GSM73016,sex,missed,male,,,"every characteristic on one line, separated by semicolons"
+GSM3454561,sex,missed,male,,,sex only in the series title
+GSM9140879,tissue,missed,CNS,,CNS,
+GSM3704172,tissue,wrong,brain,hippocampus,cortex and hippocampus,cortex and hippocampus pooled
+GSM2590419,tissue,missed,brain tumor,,GL261,"tumour-associated microglia, GL261 model"
+GSM7070798,tissue,missed,brain tumor,,glioblastoma,
+GSM7976724,tissue,missed,superior frontal gyrus,,superior frontal gyrus,"human donor, 86 years"
+GSM2791428,tissue,missed,meninges,,,
+GSM7165402,tissue,wrong,brain,hippocampus,Cortex and hippocampus,cortex and hippocampus pooled
+GSM8661652,tissue,wrong,hippocampus,brain,brain | hippocampus,"tissue says brain, region says hippocampus"
+GSM5163374,tissue,missed,hindbrain,,hindbrain,area postrema / NTS
+GSM9309266,tissue,missed,retinal pigment epithelium,,RPE,"series says 2 months, sample name says 'Old'"
+GSM2593507,cell_type,missed,microglia,,,age only in the source name; CD11b+ CD45int gate
+GSM7060826,cell_type,invented,unknown,endothelial cell,"Sorted CD45high, microglia, endothelial cells",several sorted populations listed in one field
+GSM8329549,cell_type,missed,microglia,,CD11b+ cells,tissue not stated
+GSM8350179,cell_type,missed,microglia,,CD11b+ cells from the brain,16 weeks
+GSM2075527,cell_type,missed,neuron,,,NeuN sort marks neurons
+GSM4150386,cell_type,missed,microglia,,,cell type only in the series title
+GSM7566724,cell_type,missed,Muller cell,,Muller cells,24 weeks
+GSM8680277,cell_type,missed,microglia,,Microglie,'Microglie' is misspelt
+GSM2791428,cell_type,missed,lymphatic endothelial cell,,Meningeal LECs,
+GSM4143495,cell_type,missed,microglia,,,
+GSM7066301,sample_type,wrong,primary culture,isolated cells,Bone marrow,
+GSM4726208,sample_type,wrong,isolated cells,tissue,cortical CD45+ cells,CD45+ is not a single cell type
+GSM7731157,sample_type,wrong,tissue,isolated cells,hippocampus,'whole tissue' written in the cell type field
+GSM7070798,sample_type,missed,isolated cells,not stated,glioblastoma,
+GSM6046153,sample_type,wrong,isolated cells,tissue,Spinal cord,
+GSM7976724,sample_type,missed,tissue,not stated,superior frontal gyrus,"human donor, 86 years"
+GSM4150386,sample_type,wrong,isolated cells,tissue,hippocampus,cell type only in the series title
+GSM8717629,sample_type,wrong,tissue,isolated cells,Brain,
+GSM8751106,sample_type,wrong,tissue,isolated cells,cortex,proximity labelling pulldown from cortex
+GSM7566724,sample_type,wrong,isolated cells,tissue,retina,24 weeks
+GSM9533400,sample_type,missed,isolated cells,not stated,immune cells,"age group field says 'old, young'"
+GSM10005237,sample_type,wrong,cell line,isolated cells,MG6,MG6 line
+GSM6862116,sample_type,wrong,cell line,tissue,Brain tumor,CT-2A glioma line implanted
+GSM2791428,sample_type,missed,isolated cells,not stated,"young, LECs",
+GSM6568667,sample_type,wrong,isolated cells,tissue,brain immune cells,6-8 weeks; 'brain immune cells'
+GSM5163374,sample_type,missed,tissue,not stated,AP/NTS,area postrema / NTS
+GSM4143495,sample_type,wrong,isolated cells,tissue,hippocampus,
+GSM9309266,sample_type,missed,isolated cells,not stated,RPE,"series says 2 months, sample name says 'Old'"

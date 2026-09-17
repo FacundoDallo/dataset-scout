@@ -91,7 +91,9 @@ CREATE TABLE samples (
     genotype_is_control   BOOLEAN,
     treatment_raw         VARCHAR,
     treatment_is_control  BOOLEAN,
+    treatment_source      VARCHAR,
     is_pooled             BOOLEAN,
+    is_cell_level         BOOLEAN,
     series_ids            VARCHAR
 );
 
@@ -126,6 +128,7 @@ CREATE TABLE study_quality (
     age_max_months           DOUBLE,
     sexes                    VARCHAR,
     design_fit               DOUBLE,
+    target_fit               DOUBLE,
     data_type_fit            DOUBLE,
     traceability             DOUBLE,
     score                    DOUBLE,

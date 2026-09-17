@@ -37,6 +37,17 @@ design:
   # Young and old groups need at least this many baseline samples each.
   min_per_group: 3
 
+# The material the question is about. Isolated microglia answer it; whole brain tissue only
+# contains microglia, diluted by every other cell type; another isolated cell type does not
+# answer it at all. The tissues are the ones where mouse microglia live (choroid plexus is
+# left out on purpose: its myeloid cells are border-associated macrophages, not microglia).
+# Names must match the vocabulary's canonical terms.
+target:
+  cell_types: [microglia]
+  tissues: [brain, brainstem, cerebellum, cerebral cortex, grey matter, hippocampus, hypothalamus,
+            midbrain, olfactory bulb, optic nerve, prefrontal cortex, retina, spinal cord, striatum,
+            substantia nigra, subventricular zone, thalamus, white matter]
+
 # Age groups in months. Mouse: 1.5-6 months is young adult, 18+ is old
 # (a common convention in aging research; change it if your lab uses another).
 age_groups:
@@ -54,20 +65,35 @@ harmonize:
 scoring:
   # Must add up to 1.0.
   weights:
-    metadata_completeness: 0.40
-    design_fit: 0.30
-    data_type_fit: 0.15
-    traceability: 0.15
+    metadata_completeness: 0.30
+    design_fit: 0.25
+    target_fit: 0.25
+    data_type_fit: 0.10
+    traceability: 0.10
   data_type_fit:
     bulk RNA-seq: 1.0
     single-cell RNA-seq: 0.8
     microarray: 0.6
+  # How much a sample counts as the target material.
+  target_fit:
+    isolated_target_cells: 1.0
+    cultured_target_cells: 0.5
+    single_cell_of_target_tissue: 0.5
+    bulk_target_tissue: 0.25
+    off_target: 0.0
   usable_threshold: 60
   ready_threshold: 75
 
 geo:
   # brief = sample metadata only (no data tables): fastest, and all we need.
   view: brief
+
+# Which review sheet the accuracy figures come from, and who filled it in. The reviewer is
+# printed next to every accuracy number, because who checked the samples is part of the result.
+# The blind review by a human curator is still open: review_sheet.xlsx is drawn and empty.
+validation:
+  sheet: cross_check_claude.xlsx
+  reviewer: Claude Opus 5 (AI cross-check, not an independent human review)
 
 report:
   author: Facundo Dallo

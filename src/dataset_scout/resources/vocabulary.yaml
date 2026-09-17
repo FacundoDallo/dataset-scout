@@ -218,6 +218,13 @@ control_genotype_terms: [wild type, wild-type, wildtype, wt, control, ctrl, non-
 # Treatment values are compared whole, without accents; "None/naïve" is read as two control words.
 control_treatment_terms: [vehicle, pbs, saline, control, ctrl, ctr, con, untreated, not treated, non treated, nontreated, none, no treatment, sham, mock, dmso, naive, water, unstimulated, baseline]
 
+# Words that name an intervention. Submitters often write them in fields the harmonizer does not
+# map ("infection: MHV", "procedure: stroke", "disease state: ischemic stroke"). A sample whose
+# metadata names one anywhere is not a baseline sample, so it is not counted in a young-versus-old
+# comparison. The second list names the controls of those same experiments, which stay baseline.
+intervention_terms: [lps, lipopolysaccharide, poly i:c, polyi:c, irradiation, irradiated, infection, infected, virus, viral, stroke, ischemia, ischemic, sepsis, eae, immunization, immunized, vaccination, tbi, traumatic brain injury, high fat diet, hfd, caloric restriction, dietary restriction, exercise, running wheel, minocycline, plx3397, plx5622, csf1r inhibitor, kainate, pilocarpine, sleep deprivation, hypoxia, transplantation, transplanted, parabiosis, bone marrow transplant, antibiotics, dss, chemotherapy, doxorubicin, tamoxifen, injected, stimulated]
+no_intervention_terms: [mock, sham, uninfected, non infected, noninfected, no infection, naive, vehicle, untreated, control, ctrl, saline, pbs, none, no treatment, unstimulated, baseline, healthy]
+
 # Words that describe how a sample was obtained.
 isolation_terms: [sorted, facs, macs, flow cytometry, magnetic beads, magnetic-activated, isolated, purified, percoll, immunopanning, cd11b, cd11b+, cx3cr1, tmem119, p2ry12, cd45lo, cd45int]
 ipsc_terms: [ipsc, ipscs, hipsc, induced pluripotent, imgl, imgls, ipsc-derived, ipsc derived, esc-derived]

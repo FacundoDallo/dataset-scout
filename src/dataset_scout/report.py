@@ -216,6 +216,7 @@ def build_context(
         "weights": [
             {"label": "Metadata completeness", "weight": weights["metadata_completeness"]},
             {"label": "Design fit (young and old groups)", "weight": weights["design_fit"]},
+            {"label": "Target material (the cells the question asks about)", "weight": weights["target_fit"]},
             {"label": "Data type fit", "weight": weights["data_type_fit"]},
             {"label": "Traceability (paper and raw data)", "weight": weights["traceability"]},
         ],

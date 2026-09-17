@@ -46,11 +46,8 @@ def classify_data_type(
     # Plate-based studies list every cell as a sample and report per-cell fields such as nGene or nUMI,
     # even when their library source only says "transcriptomic".
     per_cell_fields = bool({clean_words(k) for k in (sample_keys or set())} & qc_keys)
-    single_cell = (
-        any("single cell" in s for s in sources)
-        or per_cell_fields
-        or contains_any(" ".join(texts), single_cell_terms)
-    )
+    from_library_source = any("single cell" in s for s in sources)
+    single_cell = from_library_source or per_cell_fields or contains_any(" ".join(texts), single_cell_terms)
 
     if other and (has_seq or has_array):
         flags.append("multi_assay")
@@ -74,6 +71,10 @@ def classify_data_type(
 
     if single_cell:
         flags.append("single_cell")
+        if not from_library_source and not per_cell_fields:
+            # Prose in the title or summary is the only evidence: a study that merely
+            # compares itself with published single-cell data reads the same way.
+            flags.append("single_cell_from_text")
     return DataTypeResult(data_type=data_type, flags=tuple(flags), components=components)
 
 

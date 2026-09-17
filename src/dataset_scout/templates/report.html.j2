@@ -220,7 +220,8 @@ footer { border-top: 1px solid var(--rule); padding-top: 1rem; color: var(--mute
   <h2 id="validation-title">Is the harmonizer right?</h2>
   {% if validation_rows %}
   <p class="lede">
-    {{ validation.rows_reviewed | num }} samples, drawn at random across studies, were checked by hand without seeing the program's answers.
+    {{ validation.rows_reviewed | num }} samples, drawn at random across studies, were checked without seeing
+    the program's answers. Reviewer: <strong>{{ validation.reviewer }}</strong>.
     Intervals are 95% Wilson intervals.
   </p>
   <div class="table-scroll">

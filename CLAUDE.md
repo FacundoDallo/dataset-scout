@@ -20,7 +20,7 @@ The code was written without internet access and tested only against real GEO fi
 - Virtual environment in `.venv`. In Git Bash: `source .venv/Scripts/activate`.
   In PowerShell: `.venv\Scripts\Activate.ps1` (if blocked: `Set-ExecutionPolicy -Scope CurrentUser RemoteSigned`).
 - Install: `python -m pip install -e ".[dev]"`
-- Checks: `ruff check src tests` and `pytest` (108 tests, all offline). Both must pass before any commit.
+- Checks: `ruff check src tests` and `pytest` (140 tests, all offline). Both must pass before any commit.
 - NCBI identity goes in `.env` (copy `.env.example`). Never print or commit `.env`.
 
 ## Commands
@@ -42,6 +42,10 @@ scout sql config/microglia_aging.yaml "SELECT ..."
    `outputs/<run>/run_summary.json` or `validation/<run>/results.json`.
 2. **Never edit or regenerate `validation/*/review_sheet.xlsx`** once it has values. It is Facundo's manual work.
    Never fill it in yourself, and never show him the program's answers for those samples before he finishes.
+   On 2026-09-17 he asked for that review to be done by the model instead. It went into a separate file,
+   `cross_check_claude.xlsx`, and `validation.reviewer` in the config names who filled it in, so the report,
+   the README and `results.json` all say the figure is an AI cross-check. `review_sheet.xlsx` is still blank
+   and still his. Never publish an accuracy figure without the reviewer next to it.
 3. **Tune first, measure once.** Improve rules and vocabulary using `needs_review.csv` and the report's field-name
    table *before* the blind review. If rules change after the review, report the original agreement, and measure
    again on a fresh sheet (`scout review-sheet ... --seed <new> --out validation/microglia-aging/review_sheet_2.xlsx`)

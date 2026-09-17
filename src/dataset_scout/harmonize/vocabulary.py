@@ -20,6 +20,14 @@ from ..text import clean_words, contains_any, word_pattern
 DEFAULT_VOCABULARY = "vocabulary.yaml"
 # "Trem2+/+" is a wild-type allele; "Trem2+/+; 5xFAD" is not an unmodified mouse.
 _WILD_TYPE_ALLELE = re.compile(r"[a-z0-9][a-z0-9-]*\s*\+/\+")
+# Engineered alleles. These are searched inside words, because submitters write
+# "Aldh1l1CreERT2/wt" or "NuTRAP(flox/wt)" without separators.
+_ENGINEERED_ALLELE = re.compile(
+    r"flox|fl/fl|fl/wt|wt/fl|fl/\+|\+/fl|cre(?![a-z])|creer|knock ?out|knock ?in|\bko\b"
+    r"|-/-|\+/-|-/\+|tm\d|transgen"
+)
+# ...unless the value says the animal does not carry them.
+_NOT_ENGINEERED = re.compile(r"non ?transgen|cre negative|cre neg\b|no cre\b")
 
 
 @dataclass(frozen=True)
@@ -88,6 +96,8 @@ class Vocabulary:
         self.pooled_terms = _term_set(data.get("pooled_terms"))
         self.single_cell_terms = _term_set(data.get("single_cell_terms"))
         self.single_cell_qc_keys = _term_set(data.get("single_cell_qc_keys"))
+        self.intervention_terms = _term_set(data.get("intervention_terms"))
+        self.no_intervention_terms = _term_set(data.get("no_intervention_terms"))
 
     @classmethod
     def load(cls, path: str | Path | None = None) -> Vocabulary:
@@ -107,7 +117,13 @@ class Vocabulary:
             return None
         # "wild-type", "wild type" and "wildtype" are the same word for this purpose.
         spaced = text.replace("-", " ")
-        if text in self.control_genotypes or contains_any(spaced, {"wild type", "wildtype", "wt"}):
+        if text in self.control_genotypes:
+            return True
+        # A Cre driver, a floxed allele or a knockout means the mouse is engineered, even when
+        # the same value also says "wt": "Cx3cr1CreERT, Daxx wt/wt" is not a wild-type mouse.
+        if _ENGINEERED_ALLELE.search(text) and not _NOT_ENGINEERED.search(spaced):
+            return False
+        if contains_any(spaced, {"wild type", "wildtype", "wt"}):
             return True
         # A value that is only a background strain ("C57BL/6J") or a wild-type allele ("Trem2+/+")
         # describes an unmodified mouse; anything added to it ("C57BL/6-ApoeKO") does not.
@@ -120,6 +136,17 @@ class Vocabulary:
         # "None/naïve" joins two control words; "Vehicle/LPS" names a treatment.
         parts = [part.strip() for part in re.split(r"[/,;]", text) if part.strip()]
         return bool(parts) and all(part in self.control_treatments for part in parts)
+
+    def is_intervention(self, value: object) -> bool:
+        """True when a value names an intervention, e.g. 'day 4 post-MHV infection'.
+
+        Its own control is not one: 'mock infection' and 'uninfected' name the same
+        experiment without the intervention, so those samples stay baseline.
+        """
+        text = str(value or "")
+        if not text.strip() or contains_any(text, self.no_intervention_terms):
+            return False
+        return contains_any(text, self.intervention_terms)
 
     def mentions(self, text: object, terms: frozenset[str]) -> bool:
         return contains_any(str(text or ""), terms)

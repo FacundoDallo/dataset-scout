@@ -185,7 +185,7 @@ table.data td, table.data th { padding: 0.28rem 0.35rem; }
   <div class="top">
     <p class="tool">Dataset Scout, one-page summary by Facundo Dallo. Built 2026-09-17 from public GEO metadata.</p>
     <h1>Which public mouse datasets can support a young-versus-old comparison of microglial gene expression?</h1>
-    <p class="answer">153 of 351 in-scope studies are usable for this question, 53 of them ready as submitted.</p>
+    <p class="answer">129 of 351 in-scope studies are usable for this question, 36 of them ready as submitted.</p>
   </div>
 
   <div class="two">
@@ -218,22 +218,22 @@ table.data td, table.data th { padding: 0.28rem 0.35rem; }
     </tr>
     <tr>
       <td class="label">Young and old, at least 3 each</td>
-      <td><span class="track" aria-hidden="true"><span class="bar" style="width: 12.0%"></span></span></td>
-      <td class="count">50</td>
-      <td class="dropped">&minus;151</td>
+      <td><span class="track" aria-hidden="true"><span class="bar" style="width: 11.6%"></span></span></td>
+      <td class="count">48</td>
+      <td class="dropped">&minus;153</td>
     </tr>
     <tr>
       <td class="label">...and score 60 or more</td>
-      <td><span class="track" aria-hidden="true"><span class="bar" style="width: 12.0%"></span></span></td>
-      <td class="count">50</td>
-      <td class="dropped"></td>
+      <td><span class="track" aria-hidden="true"><span class="bar" style="width: 11.3%"></span></span></td>
+      <td class="count">47</td>
+      <td class="dropped">&minus;1</td>
     </tr>
   </table>
     </div>
     <div>
       <h2>What the run found</h2>
       <ul class="findings">
-        <li>50 of 351 in-scope studies (14.2%) include both young and old baseline samples with at least 3 per group.</li>
+        <li>48 of 351 in-scope studies (13.7%) include both young and old baseline samples with at least 3 per group.</li>
         <li>Age can be read for 26.2% of 27004 expression samples; it was written as 555 different strings under 13 different field names.</li>
         <li>26.4% of expression samples do not state sex.</li>
         <li>8 in-scope studies use cell lines rather than primary tissue or cells, which a keyword search alone does not reveal.</li>
@@ -261,22 +261,12 @@ table.data td, table.data th { padding: 0.28rem 0.35rem; }
         <tr>
           <td><span class="accession">GSE233400</span> <span class="study-title">Microglial senescence contributes to female-biased neuroinflammation in the aging mouse hippocampus: implications for Alzheimer’s disease</span></td>
           <td>bulk RNA-seq</td>
-          <td class="num">17</td>
-          <td class="num">21</td>
+          <td class="num">7</td>
+          <td class="num">9</td>
           <td>female, male</td>
           <td class="num">100</td>
           <td><span class="tier tier-ready">ready</span></td>
-          <td class="flags">nothing flagged</td>
-        </tr>
-        <tr>
-          <td><span class="accession">GSE287142</span> <span class="study-title">Retinoid X Receptor as a Mediator of Post Stroke Recovery by Reversing Age-Associated Phenotypes of Microglia/Hematogenous Macrophages</span></td>
-          <td>bulk RNA-seq</td>
-          <td class="num">3</td>
-          <td class="num">6</td>
-          <td>male</td>
-          <td class="num">100</td>
-          <td><span class="tier tier-ready">ready</span></td>
-          <td class="flags">one sex only, treated samples</td>
+          <td class="flags">mutant genotypes</td>
         </tr>
         <tr>
           <td><span class="accession">GSE156762</span> <span class="study-title">mTOR-dependent translation amplifies microglia priming in ageing</span></td>
@@ -289,14 +279,24 @@ table.data td, table.data th { padding: 0.28rem 0.35rem; }
           <td class="flags">one sex only</td>
         </tr>
         <tr>
-          <td><span class="accession">GSE131869</span> <span class="study-title">Cx3cr1-deficient microglia exhibit a premature aging transcriptome</span></td>
-          <td>bulk RNA-seq</td>
-          <td class="num">19</td>
+          <td><span class="accession">GSE267529</span> <span class="study-title">Microglia undergo sex-dimorphic transcriptional and metabolic rewiring during aging</span></td>
+          <td>single-cell RNA-seq</td>
+          <td class="num">10</td>
           <td class="num">10</td>
           <td>female, male</td>
           <td class="num">98</td>
           <td><span class="tier tier-ready">ready</span></td>
-          <td class="flags">mutant genotypes, treated samples</td>
+          <td class="flags">single-cell, single-cell from text</td>
+        </tr>
+        <tr>
+          <td><span class="accession">GSE166548</span> <span class="study-title">White matter aging drives microglial diversity</span></td>
+          <td>single-cell RNA-seq</td>
+          <td class="num">27</td>
+          <td class="num">287</td>
+          <td>female, male, mixed</td>
+          <td class="num">98</td>
+          <td><span class="tier tier-ready">ready</span></td>
+          <td class="flags">pooled samples, single-cell, single-cell from text</td>
         </tr>
       </tbody>
     </table>
@@ -336,18 +336,25 @@ table.data td, table.data th { padding: 0.28rem 0.35rem; }
   <div class="bottom">
     <div>
       <h3>Accuracy</h3>
-      <p>Manual review pending. Agreement per field will appear here after <code>scout validate</code>.</p>
+      <p>Blind review of 100 samples by Claude Opus 5 (AI cross-check, not an independent human review).</p>
+      <p>Age group: <strong>89%</strong> <span class="muted">(81%&ndash;94%)</span></p>
+      <p>Age in months: <strong>92%</strong> <span class="muted">(85%&ndash;96%)</span></p>
+      <p>Sex: <strong>98%</strong> <span class="muted">(93%&ndash;99%)</span></p>
+      <p>Tissue: <strong>90%</strong> <span class="muted">(83%&ndash;94%)</span></p>
+      <p>Cell type: <strong>90%</strong> <span class="muted">(83%&ndash;94%)</span></p>
+      <p>Sample type: <strong>82%</strong> <span class="muted">(73%&ndash;88%)</span></p>
     </div>
     <div>
       <h3>Method</h3>
       <p>NCBI GEO search, then rule-based harmonization of free-text sample metadata into age, sex, tissue, cell type and strain, keeping the raw text and rule behind every value.</p>
-      <p>Score = weighted completeness, design fit, data type and traceability. Weights live in a YAML file.</p>
+      <p>Score = weighted completeness, design fit, target material, data type and traceability.
+        Weights live in a YAML file.</p>
       <p>8 of 10 automated checks passed.</p>
     </div>
     <div>
       <h3>Reproducibility</h3>
       <p>Every NCBI response is stored, so the run replays offline with identical results.</p>
-      <p>Run microglia-aging-20260917T004104Z; configuration SHA-256 c40d6430ab71.</p>
+      <p>Run microglia-aging-20260917T224701Z; configuration SHA-256 abcfdaabf38c.</p>
       <p>Python, DuckDB, SQL views, pytest, GitHub Actions, Docker.</p>
 <p><a href="https://github.com/FacundoDallo/dataset-scout">https://github.com/FacundoDallo/dataset-scout</a></p>    </div>
   </div>

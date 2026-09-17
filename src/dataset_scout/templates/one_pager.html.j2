@@ -124,7 +124,7 @@ table.data td, table.data th { padding: 0.28rem 0.35rem; }
     <div>
       <h3>Accuracy</h3>
       {% if validation_rows %}
-      <p>Blind manual review of {{ validation.rows_reviewed | num }} samples.</p>
+      <p>Blind review of {{ validation.rows_reviewed | num }} samples by {{ validation.reviewer }}.</p>
       {% for row in validation_rows %}
       <p>{{ row.label }}: <strong>{{ row.accuracy | pct }}</strong> <span class="muted">({{ row.ci_low | pct }}&ndash;{{ row.ci_high | pct }})</span></p>
       {% endfor %}
@@ -135,7 +135,8 @@ table.data td, table.data th { padding: 0.28rem 0.35rem; }
     <div>
       <h3>Method</h3>
       <p>NCBI GEO search, then rule-based harmonization of free-text sample metadata into age, sex, tissue, cell type and strain, keeping the raw text and rule behind every value.</p>
-      <p>Score = weighted completeness, design fit, data type and traceability. Weights live in a YAML file.</p>
+      <p>Score = weighted completeness, design fit, target material, data type and traceability.
+        Weights live in a YAML file.</p>
       <p>{{ status_counts.pass }} of {{ checks | length }} automated checks passed{% if status_counts.fail %}; {{ status_counts.fail }} failed{% endif %}.</p>
     </div>
     <div>

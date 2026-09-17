@@ -1,0 +1,79 @@
+{
+  "config_name": "microglia-aging",
+  "computed_at": "2026-09-17T22:47:44+00:00",
+  "tool_version": "0.1.0",
+  "sheet": "validation/microglia-aging/cross_check_claude.xlsx",
+  "sheet_sha256": "7a227340115314c7fdbe25f96056c98c6ce9fbb659b78e682f5e0b8174ea0504",
+  "reviewer": "Claude Opus 5 (AI cross-check, not an independent human review)",
+  "rows_in_sheet": 100,
+  "rows_reviewed": 100,
+  "rows_not_in_run": 0,
+  "fields": [
+    {
+      "field": "age_group",
+      "n_reviewed": 100,
+      "n_correct": 89,
+      "n_wrong": 4,
+      "n_missed": 6,
+      "n_invented": 1,
+      "accuracy": 0.89,
+      "ci_low": 0.8137,
+      "ci_high": 0.9375
+    },
+    {
+      "field": "age_months",
+      "n_reviewed": 100,
+      "n_correct": 92,
+      "n_wrong": 2,
+      "n_missed": 6,
+      "n_invented": 0,
+      "accuracy": 0.92,
+      "ci_low": 0.85,
+      "ci_high": 0.9589
+    },
+    {
+      "field": "sex",
+      "n_reviewed": 100,
+      "n_correct": 98,
+      "n_wrong": 0,
+      "n_missed": 2,
+      "n_invented": 0,
+      "accuracy": 0.98,
+      "ci_low": 0.93,
+      "ci_high": 0.9945
+    },
+    {
+      "field": "tissue",
+      "n_reviewed": 100,
+      "n_correct": 90,
+      "n_wrong": 3,
+      "n_missed": 7,
+      "n_invented": 0,
+      "accuracy": 0.9,
+      "ci_low": 0.8256,
+      "ci_high": 0.9448
+    },
+    {
+      "field": "cell_type",
+      "n_reviewed": 100,
+      "n_correct": 90,
+      "n_wrong": 0,
+      "n_missed": 9,
+      "n_invented": 1,
+      "accuracy": 0.9,
+      "ci_low": 0.8256,
+      "ci_high": 0.9448
+    },
+    {
+      "field": "sample_type",
+      "n_reviewed": 100,
+      "n_correct": 82,
+      "n_wrong": 12,
+      "n_missed": 6,
+      "n_invented": 0,
+      "accuracy": 0.82,
+      "ci_low": 0.7333,
+      "ci_high": 0.883
+    }
+  ]
+}

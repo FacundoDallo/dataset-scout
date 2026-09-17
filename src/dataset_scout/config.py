@@ -33,6 +33,9 @@ DEFAULTS: dict[str, Any] = {
         "exclude_superseries": True,
     },
     "design": {"type": "age_contrast", "min_per_group": 3},
+    # The material the question is about. Empty lists mean "any material counts",
+    # so a configuration that does not name a target keeps the old behaviour.
+    "target": {"cell_types": [], "tissues": []},
     "age_groups": {
         "Mus musculus": {"young_min_months": 1.5, "young_max_months": 6, "old_min_months": 18},
         "Rattus norvegicus": {"young_min_months": 1.5, "young_max_months": 6, "old_min_months": 20},
@@ -41,21 +44,34 @@ DEFAULTS: dict[str, Any] = {
     "harmonize": {"age_fallback": True, "sex_fallback": True},
     "scoring": {
         "weights": {
-            "metadata_completeness": 0.40,
-            "design_fit": 0.30,
-            "data_type_fit": 0.15,
-            "traceability": 0.15,
+            "metadata_completeness": 0.30,
+            "design_fit": 0.25,
+            "target_fit": 0.25,
+            "data_type_fit": 0.10,
+            "traceability": 0.10,
         },
         "data_type_fit": {
             "bulk RNA-seq": 1.0,
             "single-cell RNA-seq": 0.8,
             "microarray": 0.6,
         },
+        # How much a sample counts towards the target material. Isolated target cells are
+        # the real thing; cultured cells drift from it; whole tissue only contains it.
+        "target_fit": {
+            "isolated_target_cells": 1.0,
+            "cultured_target_cells": 0.5,
+            "single_cell_of_target_tissue": 0.5,
+            "bulk_target_tissue": 0.25,
+            "off_target": 0.0,
+        },
         "usable_threshold": 60,
         "ready_threshold": 75,
     },
     "geo": {"view": "brief"},
     "paths": {"snapshot": None, "output": None, "vocabulary": None, "validation": None},
+    # Which review sheet the accuracy figures come from, and who filled it in. The reviewer
+    # is printed next to every accuracy number: who checked the samples is part of the result.
+    "validation": {"sheet": "review_sheet.xlsx", "reviewer": "manual review"},
     "report": {"author": None, "project_url": None},
     "demo": False,
 }
@@ -87,11 +103,14 @@ class ScoutConfig:
     scope_data_types: tuple[str, ...]
     exclude_superseries: bool
     min_per_group: int
+    target_cell_types: tuple[str, ...]
+    target_tissues: tuple[str, ...]
     age_groups: dict[str, AgeThresholds]
     age_fallback: bool
     sex_fallback: bool
     weights: dict[str, float]
     data_type_fit: dict[str, float]
+    target_fit: dict[str, float]
     usable_threshold: float
     ready_threshold: float
     geo_view: str
@@ -99,6 +118,8 @@ class ScoutConfig:
     output_dir: Path
     vocabulary_path: Path | None
     validation_dir: Path
+    review_sheet: str
+    reviewer: str
     is_demo: bool
     source_path: Path | None
     data: dict[str, Any]
@@ -179,6 +200,11 @@ def config_from_dict(raw: dict[str, Any], source_path: Path | None = None) -> Sc
     if abs(sum(weights.values()) - 1.0) > 1e-6:
         raise ConfigError(f"scoring.weights must add up to 1.0 (they add up to {sum(weights.values()):.3f}).")
 
+    target_fit = {k: float(v) for k, v in data["scoring"]["target_fit"].items()}
+    expected_target = set(DEFAULTS["scoring"]["target_fit"])
+    if set(target_fit) != expected_target:
+        raise ConfigError(f"scoring.target_fit must define exactly: {sorted(expected_target)}")
+
     view = str(data["geo"]["view"]).lower()
     if view not in GEO_VIEWS:
         raise ConfigError(f"geo.view must be one of {GEO_VIEWS}, got '{view}'.")
@@ -225,11 +251,14 @@ def config_from_dict(raw: dict[str, Any], source_path: Path | None = None) -> Sc
         scope_data_types=tuple(data["scope"]["data_types"]),
         exclude_superseries=bool(data["scope"]["exclude_superseries"]),
         min_per_group=min_per_group,
+        target_cell_types=tuple(str(t).strip().lower() for t in (data["target"].get("cell_types") or [])),
+        target_tissues=tuple(str(t).strip().lower() for t in (data["target"].get("tissues") or [])),
         age_groups=age_groups,
         age_fallback=bool(data["harmonize"]["age_fallback"]),
         sex_fallback=bool(data["harmonize"]["sex_fallback"]),
         weights=weights,
         data_type_fit={k: float(v) for k, v in data["scoring"]["data_type_fit"].items()},
+        target_fit=target_fit,
         usable_threshold=float(data["scoring"]["usable_threshold"]),
         ready_threshold=float(data["scoring"]["ready_threshold"]),
         geo_view=view,
@@ -237,6 +266,8 @@ def config_from_dict(raw: dict[str, Any], source_path: Path | None = None) -> Sc
         output_dir=output,
         vocabulary_path=vocabulary,
         validation_dir=validation,
+        review_sheet=str(data["validation"]["sheet"]),
+        reviewer=str(data["validation"]["reviewer"]),
         is_demo=bool(data.get("demo")),
         source_path=source_path,
         data=data,

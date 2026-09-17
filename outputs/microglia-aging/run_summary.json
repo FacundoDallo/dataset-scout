@@ -1,8 +1,8 @@
 {
   "lineage": {
-    "run_id": "microglia-aging-20260917T004104Z",
-    "started_at": "2026-09-17T00:41:04+00:00",
-    "finished_at": "2026-09-17T00:41:27+00:00",
+    "run_id": "microglia-aging-20260917T224701Z",
+    "started_at": "2026-09-17T22:47:01+00:00",
+    "finished_at": "2026-09-17T22:47:19+00:00",
     "mode": "auto",
     "tool_version": "0.1.0",
     "python": "3.14.7",
@@ -17,7 +17,7 @@
     },
     "config_name": "microglia-aging",
     "config_file": "config/microglia_aging.yaml",
-    "config_sha256": "c40d6430ab714a7a46cff6ed04773bdb1931244d698f8d5779a23b74b61151e1",
+    "config_sha256": "abcfdaabf38c523db56f7f549f576745597c4956b531c14b3e81d35f374647ca",
     "search_term": "((microglia OR microglial) AND (aging OR ageing OR aged OR \"old mice\")) AND GSE[ETYP] AND \"Mus musculus\"[Organism]",
     "snapshot_dir": "snapshots/microglia-aging",
     "snapshot_index": "snapshots/microglia-aging/snapshot_index.csv",
@@ -34,10 +34,10 @@
     "n_studies": 415,
     "n_in_scope": 351,
     "n_with_age": 201,
-    "n_contrast": 50,
-    "n_usable": 153,
-    "n_ready": 53,
-    "n_contrast_usable": 50,
+    "n_contrast": 48,
+    "n_usable": 129,
+    "n_ready": 36,
+    "n_contrast_usable": 47,
     "n_samples_scope": 27240,
     "n_expression_samples": 27004,
     "funnel": [
@@ -59,11 +59,11 @@
       },
       {
         "label": "Young and old, at least 3 each",
-        "count": 50
+        "count": 48
       },
       {
         "label": "...and score 60 or more",
-        "count": 50
+        "count": 47
       }
     ],
     "completeness": [
@@ -341,7 +341,7 @@
       }
     ],
     "findings": [
-      "50 of 351 in-scope studies (14.2%) include both young and old baseline samples with at least 3 per group.",
+      "48 of 351 in-scope studies (13.7%) include both young and old baseline samples with at least 3 per group.",
       "Age can be read for 26.2% of 27004 expression samples; it was written as 555 different strings under 13 different field names.",
       "26.4% of expression samples do not state sex.",
       "8 in-scope studies use cell lines rather than primary tissue or cells, which a keyword search alone does not reveal.",
@@ -400,7 +400,85 @@
       "detail": "97% of samples with a written tissue or cell type map to the controlled vocabulary (9271 of 9528)."
     }
   ],
-  "validation": null,
+  "validation": {
+    "config_name": "microglia-aging",
+    "computed_at": "2026-09-17T22:47:22+00:00",
+    "tool_version": "0.1.0",
+    "sheet": "validation/microglia-aging/cross_check_claude.xlsx",
+    "sheet_sha256": "7a227340115314c7fdbe25f96056c98c6ce9fbb659b78e682f5e0b8174ea0504",
+    "reviewer": "Claude Opus 5 (AI cross-check, not an independent human review)",
+    "rows_in_sheet": 100,
+    "rows_reviewed": 100,
+    "rows_not_in_run": 0,
+    "fields": [
+      {
+        "field": "age_group",
+        "n_reviewed": 100,
+        "n_correct": 89,
+        "n_wrong": 4,
+        "n_missed": 6,
+        "n_invented": 1,
+        "accuracy": 0.89,
+        "ci_low": 0.8137,
+        "ci_high": 0.9375
+      },
+      {
+        "field": "age_months",
+        "n_reviewed": 100,
+        "n_correct": 92,
+        "n_wrong": 2,
+        "n_missed": 6,
+        "n_invented": 0,
+        "accuracy": 0.92,
+        "ci_low": 0.85,
+        "ci_high": 0.9589
+      },
+      {
+        "field": "sex",
+        "n_reviewed": 100,
+        "n_correct": 98,
+        "n_wrong": 0,
+        "n_missed": 2,
+        "n_invented": 0,
+        "accuracy": 0.98,
+        "ci_low": 0.93,
+        "ci_high": 0.9945
+      },
+      {
+        "field": "tissue",
+        "n_reviewed": 100,
+        "n_correct": 90,
+        "n_wrong": 3,
+        "n_missed": 7,
+        "n_invented": 0,
+        "accuracy": 0.9,
+        "ci_low": 0.8256,
+        "ci_high": 0.9448
+      },
+      {
+        "field": "cell_type",
+        "n_reviewed": 100,
+        "n_correct": 90,
+        "n_wrong": 0,
+        "n_missed": 9,
+        "n_invented": 1,
+        "accuracy": 0.9,
+        "ci_low": 0.8256,
+        "ci_high": 0.9448
+      },
+      {
+        "field": "sample_type",
+        "n_reviewed": 100,
+        "n_correct": 82,
+        "n_wrong": 12,
+        "n_missed": 6,
+        "n_invented": 0,
+        "accuracy": 0.82,
+        "ci_low": 0.7333,
+        "ci_high": 0.883
+      }
+    ]
+  },
   "outputs": {
     "database": "dataset_scout.duckdb",
     "report": "report.html",

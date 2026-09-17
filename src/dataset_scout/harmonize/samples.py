@@ -59,7 +59,9 @@ SAMPLE_COLUMNS: tuple[str, ...] = (
     "genotype_is_control",
     "treatment_raw",
     "treatment_is_control",
+    "treatment_source",
     "is_pooled",
+    "is_cell_level",
     "series_ids",
 )
 
@@ -204,6 +206,8 @@ def harmonize_sample(
 
     fields: dict[str, list[tuple[str | None, str]]] = defaultdict(list)
     other_values: list[str] = []
+    other_items: list[tuple[str | None, str]] = []
+    keys_seen: set[str] = set()
     characteristic_rows: list[dict[str, Any]] = []
     for item in sample.characteristics:
         mapped = classify_key(item.key)
@@ -221,10 +225,12 @@ def harmonize_sample(
         # channel 1 describes the sample itself.
         if item.channel != 1:
             continue
+        keys_seen.add(clean_words(item.key))
         if mapped:
             fields[mapped].append((item.key, item.value))
         else:
             other_values.append(item.value)
+            other_items.append((item.key, item.value))
 
     fallback_texts: list[tuple[str, str]] = [("group", v) for _, v in fields.get("group", [])]
     fallback_texts += [("source_name", source_name), ("title", title)]
@@ -262,6 +268,17 @@ def harmonize_sample(
     )
     genotype_raw = _join(written_values("genotype"))
     treatment_raw = _join(written_values("treatment"))
+    treatment_is_control = vocab.is_control_treatment(treatment_raw) if treatment_raw else None
+    treatment_source = "field" if treatment_raw else None
+    if treatment_is_control is not False:
+        # Interventions are often written in fields the harmonizer does not map to treatment
+        # ("infection: MHV", "procedure: stroke"). Such a sample is not a baseline sample.
+        for key, value in [*fields.get("group", []), *other_items]:
+            if vocab.is_intervention(value):
+                treatment_raw = _join([treatment_raw, f"{key}: {value}" if key else value])
+                treatment_is_control = False
+                treatment_source = "other field"
+                break
 
     row: dict[str, Any] = {
         "gsm": sample.accession,
@@ -298,8 +315,12 @@ def harmonize_sample(
         "genotype_raw": genotype_raw or None,
         "genotype_is_control": vocab.is_control_genotype(genotype_raw) if genotype_raw else None,
         "treatment_raw": treatment_raw or None,
-        "treatment_is_control": vocab.is_control_treatment(treatment_raw) if treatment_raw else None,
+        "treatment_is_control": treatment_is_control,
+        "treatment_source": treatment_source,
         "is_pooled": vocab.mentions(all_text, vocab.pooled_terms) or bool(sex and "pooled" in sex.flags),
+        # Plate-based studies deposit one sample per cell and report per-cell quality fields.
+        # Such a record is one cell, not one animal, so it is no replicate of its own.
+        "is_cell_level": bool(keys_seen & vocab.single_cell_qc_keys),
         "series_ids": ";".join(sample.get_all("series_id")),
     }
     return row, characteristic_rows
