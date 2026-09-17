@@ -71,5 +71,4 @@ geo:
 
 report:
   author: Facundo Dallo
-  # Fill in after publishing the repository, e.g. https://github.com/<user>/dataset-scout
-  project_url: null
+  project_url: https://github.com/FacundoDallo/dataset-scout

@@ -17,16 +17,18 @@ The demo question: *which public mouse datasets can support a young-versus-old c
 
 ## Results of the demo run
 
-<!-- FILL AFTER THE LIVE RUN: copy the numbers from outputs/microglia-aging/run_summary.json and validation/microglia-aging/results.json. Do not round up or estimate. -->
-
 | | |
 |---|---|
-| GEO series matching the search | _to fill_ |
-| In scope (mouse, expression data, not a SuperSeries) | _to fill_ |
-| With young and old baseline samples, at least 3 per group | _to fill_ |
-| Usable (score 60 or more) | _to fill_ |
-| Distinct field names used by submitters | _to fill_ |
-| Harmonizer agreement with blind manual review (age group, sex, tissue) | _to fill_ |
+| GEO series matching the search | 415 |
+| In scope (mouse, expression data, not a SuperSeries) | 351 |
+| Scored 60 or more (usable) | 153 |
+| With young and old baseline samples, at least 3 per group | 50 |
+| ...and scored 60 or more | 50 |
+| In-scope expression samples harmonized | 27,004 |
+| Distinct field names used by submitters | 155 |
+| Harmonizer agreement with blind manual review (age group, sex, tissue) | not measured yet |
+
+Every number comes from run `microglia-aging-20260917T004104Z` in [`outputs/microglia-aging/run_summary.json`](outputs/microglia-aging/run_summary.json); replaying that run from the recorded responses reproduces them exactly. The blind review sheet (100 samples, one per study) is in `validation/microglia-aging/`; the accuracy row stays empty until a reviewer fills it in.
 
 Open [`outputs/microglia-aging/report.html`](outputs/microglia-aging/report.html) (download it and open it in a browser) or the [one-page summary](outputs/microglia-aging/one_pager.html).
 
