@@ -1,0 +1,48 @@
+[build-system]
+requires = ["setuptools>=77", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "dataset-scout"
+version = "0.1.0"
+description = "Find, harmonize and score public gene-expression datasets for a research question."
+readme = "README.md"
+requires-python = ">=3.10"
+license = "MIT"
+license-files = ["LICENSE"]
+authors = [{ name = "Facundo Dallo" }]
+keywords = ["GEO", "metadata", "harmonization", "data quality", "drug discovery"]
+dependencies = [
+  "requests>=2.31",
+  "pandas>=2.1",
+  "duckdb>=1.0",
+  "PyYAML>=6.0",
+  "Jinja2>=3.1",
+  "openpyxl>=3.1",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8", "ruff>=0.6"]
+
+[project.scripts]
+scout = "dataset_scout.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+dataset_scout = ["templates/*.j2", "sql/*.sql", "resources/*.yaml"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"
+
+[tool.ruff]
+line-length = 120
+target-version = "py310"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "B", "UP"]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/*" = ["E501"]

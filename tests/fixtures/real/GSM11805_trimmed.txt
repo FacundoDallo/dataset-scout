@@ -1,0 +1,34 @@
+^SAMPLE = GSM11805
+!Sample_title = N035 Normal Human Kidney U133A
+!Sample_geo_accession = GSM11805
+!Sample_status = Public on Nov 25 2003
+!Sample_submission_date = Oct 20 2003
+!Sample_last_update_date = May 28 2005
+!Sample_type = RNA
+!Sample_channel_count = 1
+!Sample_source_name_ch1 = Trizol isolation of total RNA from normal tissue adjacent to Renal Cell Carcinoma
+!Sample_organism_ch1 = Homo sapiens
+!Sample_molecule_ch1 = total RNA
+!Sample_description = Age = 70; Gender = Female; Right Kidney; Adjacent Tumor Type = clear cell; Adjacent Tumor Fuhrman Grade = 3; Adjacent Tumor Capsule Penetration = true; Adjacent Tumor Perinephric Fat Invasion = true; Adjacent Tumor Renal Sinus Invasion = false; Adjacent Tumor Renal Vein Invasion = true; Scaling Target = 500; Scaling Factor = 7.09; Raw Q = 2.39; Noise = 2.60; Background = 55.24.
+!Sample_description = Keywords = kidney
+!Sample_description = Keywords = renal
+!Sample_description = Keywords = RCC
+!Sample_description = Keywords = carcinoma
+!Sample_description = Keywords = cancer
+!Sample_description = Lot batch = 2004638
+!Sample_platform_id = GPL96
+!Sample_supplementary_file = ftp://ftp.ncbi.nih.gov/pub/geo/DATA/supplementary/samples/GSM11nnn/GSM11805/GSM11805.CEL.gz
+!Sample_series_id = GSE781
+!Sample_data_row_count = 22283
+!Sample_comment = Raw data provided as supplementary file
+#ID_REF =  
+#VALUE = MAS 5.0 Statistical Algorithm (mean scaled to 500)
+#ABS_CALL = MAS 5.0 Absent, Marginal, Present call  with Alpha1 = 0.05, Alpha2 = 0.065
+!sample_table_begin
+ID_REF	VALUE	ABS_CALL
+AFFX-BioB-5_at	953.9	P
+AFFX-BioB-M_at	2982.8	P
+AFFX-BioB-3_at	1657.9	P
+AFFX-BioC-5_at	2652.7	P
+AFFX-BioC-3_at	2019.5	P
+!sample_table_end

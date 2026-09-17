@@ -1,0 +1,35 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+build/
+dist/
+.pytest_cache/
+.ruff_cache/
+
+# Secrets: NCBI e-mail and API key live here, never in Git
+.env
+
+# Rebuilt on every run (the report, CSVs and run_summary.json are kept)
+outputs/**/*.duckdb
+outputs/**/*.duckdb.wal
+outputs/**/run.log
+
+# Editors and operating systems
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+~$*.xlsx
+
+# Recorded NCBI responses: large, and they include submitters' contact details.
+# A live run records them locally (see README, Quick start).
+snapshots/
+
+# Local tool settings and personal session notes
+.claude/settings.local.json
+RESUMEN_SESION.md
+REVISION_ESTUDIOS_LISTOS.md
+SIGUIENTE_PASO.md

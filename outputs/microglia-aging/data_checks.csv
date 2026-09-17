@@ -1,0 +1,11 @@
+check_name,status,detail
+ages_readable,warn,15397 of 22480 written ages (68%) could not be converted to months; they are listed in the curator inbox.
+sample_metadata_retrieved,warn,Sample metadata could not be retrieved for 1 series: GSE289098. They stay in the ranking with a low score and the flag 'no_samples_retrieved'.
+links_are_consistent,pass,All 27246 series-sample links resolve.
+sample_counts_match,pass,Sample counts match GEO for all 350 retrieved series.
+sample_records_consistent,pass,Samples shared between series are described identically.
+scores_in_range,pass,All 351 scores are between 0 and 100.
+search_returned_studies,pass,415 series matched; 415 retrieved.
+summary_schema,pass,All expected fields are present in the NCBI study summaries.
+unique_study_ids,pass,Every series appears once.
+vocabulary_coverage,pass,97% of samples with a written tissue or cell type map to the controlled vocabulary (9271 of 9528).

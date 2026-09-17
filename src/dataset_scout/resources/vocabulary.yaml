@@ -1,0 +1,230 @@
+# Controlled vocabulary used by the harmonizer.
+#
+# Each entry maps a canonical term to the spellings found in public metadata.
+# Matching is case-insensitive and whole-word; longer synonyms win, so
+# "prefrontal cortex" is matched before "cortex".
+#
+# Ambiguous abbreviations are left out on purpose ("HPC" is hippocampus in one
+# study and hematopoietic progenitor cells in another). A missed term shows up
+# in the curator inbox; a wrong match would be silent.
+#
+# Ontology identifiers (UBERON for anatomy, CL for cell types) make the output
+# interoperable with other resources. They were entered by hand and should be
+# checked against the EBI Ontology Lookup Service before relying on them.
+# To extend the vocabulary for another question, copy this file, edit it and
+# point `paths.vocabulary` in the run configuration to the copy.
+
+tissue:
+  brain:
+    # "olfactory bulb-removed brains" is a whole brain, not an olfactory bulb.
+    synonyms: [whole brain, brain tissue, brains, forebrain, brain hemisphere, hemibrain, olfactory bulb-removed brains]
+    ontology: UBERON:0000955
+  hippocampus:
+    # "hippocamus" is a misspelling found in GEO records.
+    synonyms: [hippocampal, hippocampal formation, hippocampi, dentate gyrus, ca1, ca3, hippocamus]
+    ontology: UBERON:0002421
+  cerebral cortex:
+    synonyms: [cortex, cortical, neocortex, frontal cortex, somatosensory cortex, motor cortex, visual cortex, entorhinal cortex]
+    ontology: UBERON:0000956
+  prefrontal cortex:
+    synonyms: [pfc, medial prefrontal cortex, mpfc]
+    ontology: UBERON:0000451
+  cerebellum:
+    synonyms: [cerebellar]
+    ontology: UBERON:0002037
+  striatum:
+    synonyms: [striatal, caudate putamen, nucleus accumbens]
+    ontology: UBERON:0002435
+  hypothalamus:
+    synonyms: [hypothalamic]
+    ontology: UBERON:0001898
+  brainstem:
+    synonyms: [brain stem]
+    ontology: UBERON:0002298
+  thalamus:
+    synonyms: []
+    ontology: UBERON:0001897
+  midbrain:
+    synonyms: []
+    ontology: UBERON:0001891
+  substantia nigra:
+    synonyms: []
+    ontology: UBERON:0002038
+  olfactory bulb:
+    synonyms: [olfactory bulbs]
+    ontology: UBERON:0002264
+  choroid plexus:
+    synonyms: []
+    ontology: UBERON:0001886
+  # SVZ is unambiguous in neuroscience records. Its UBERON identifier still has to be looked up.
+  subventricular zone:
+    synonyms: [svz]
+  white matter:
+    synonyms: []
+    ontology: UBERON:0002316
+  grey matter:
+    synonyms: [gray matter]
+    ontology: UBERON:0002020
+  optic nerve:
+    synonyms: []
+    ontology: UBERON:0000941
+  spinal cord:
+    # Keeps "spinal cord white matter" in the spinal cord instead of generic white matter.
+    synonyms: [spinal, lumbar spinal cord, cervical spinal cord, spinal cord white matter]
+    ontology: UBERON:0002240
+  retina:
+    synonyms: [retinal, retinas]
+    ontology: UBERON:0000966
+  blood:
+    synonyms: [peripheral blood, whole blood, pbmc, pbmcs]
+    ontology: UBERON:0000178
+  bone marrow:
+    synonyms: [marrow]
+    ontology: UBERON:0002371
+  spleen:
+    synonyms: [splenic]
+    ontology: UBERON:0002106
+  liver:
+    synonyms: [hepatic]
+    ontology: UBERON:0002107
+  lung:
+    synonyms: [lungs, pulmonary]
+    ontology: UBERON:0002048
+  heart:
+    synonyms: [cardiac, myocardium]
+    ontology: UBERON:0000948
+  kidney:
+    synonyms: [renal, kidneys, renal cortex, kidney cortex]
+    ontology: UBERON:0002113
+  adipose tissue:
+    synonyms: [fat, white adipose tissue, wat, brown adipose tissue, adipose]
+    ontology: UBERON:0001013
+  skeletal muscle:
+    synonyms: [muscle, gastrocnemius, quadriceps, tibialis anterior]
+    ontology: UBERON:0001134
+  skin:
+    synonyms: [dermis, epidermis]
+    ontology: UBERON:0002097
+
+cell_type:
+  microglia:
+    synonyms: [microglial, microglial cells, microglial cell, microglia cells, brain microglia]
+    ontology: CL:0000129
+  astrocyte:
+    synonyms: [astrocytes, astroglia, astroglial]
+    ontology: CL:0000127
+  neuron:
+    synonyms: [neurons, neuronal]
+    ontology: CL:0000540
+  oligodendrocyte:
+    synonyms: [oligodendrocytes, oligodendroglia]
+    ontology: CL:0000128
+  oligodendrocyte precursor cell:
+    synonyms: [opc, opcs, oligodendrocyte progenitor cells, oligodendrocyte precursor cells]
+    ontology: CL:0002453
+  macrophage:
+    synonyms: [macrophages, bone marrow derived macrophages, bmdm, bmdms]
+    ontology: CL:0000235
+  border-associated macrophage:
+    synonyms: [border associated macrophages, bam, bams, perivascular macrophages]
+    ontology: CL:0000881
+  monocyte:
+    synonyms: [monocytes]
+    ontology: CL:0000576
+  neutrophil:
+    synonyms: [neutrophils]
+    ontology: CL:0000775
+  endothelial cell:
+    synonyms: [endothelial cells, endothelium]
+    ontology: CL:0000115
+  pericyte:
+    synonyms: [pericytes]
+    ontology: CL:0000669
+  t cell:
+    synonyms: [t cells, t lymphocytes, cd4+ t cells, cd8+ t cells]
+    ontology: CL:0000084
+  b cell:
+    synonyms: [b cells, b lymphocytes]
+    ontology: CL:0000236
+  fibroblast:
+    synonyms: [fibroblasts]
+    ontology: CL:0000057
+  hepatocyte:
+    synonyms: [hepatocytes]
+    ontology: CL:0000182
+
+cell_line:
+  BV-2:
+    synonyms: [bv2, bv 2, bv-2 cells, bv2 cells]
+    species: Mus musculus
+    lineage: microglia
+  N9:
+    synonyms: [n9 cells, n9 microglia]
+    species: Mus musculus
+    lineage: microglia
+  SIM-A9:
+    synonyms: [sima9, sim a9]
+    species: Mus musculus
+    lineage: microglia
+  HMC3:
+    synonyms: [hmc-3, hmc3 cells]
+    species: Homo sapiens
+    lineage: microglia
+  RAW 264.7:
+    synonyms: [raw264.7, raw 264.7 cells, raw264]
+    species: Mus musculus
+    lineage: macrophage
+  THP-1:
+    synonyms: [thp1, thp-1 cells]
+    species: Homo sapiens
+    lineage: monocyte
+  Neuro-2a:
+    synonyms: [neuro2a, n2a]
+    species: Mus musculus
+    lineage: neuron
+  SH-SY5Y:
+    synonyms: [shsy5y, sh sy5y]
+    species: Homo sapiens
+    lineage: neuron
+  HEK293:
+    synonyms: [hek 293, hek293t, hek-293]
+    species: Homo sapiens
+    lineage: kidney
+
+strain:
+  C57BL/6J:
+    synonyms: [c57bl/6j, c57bl6/j, c57bl/6 j, c57bl6j, b6j, c57bl/6jrj]
+  C57BL/6N:
+    synonyms: [c57bl/6n, c57bl6/n, c57bl6n, b6n, c57bl/6ncrl]
+  C57BL/6 (substrain not stated):
+    synonyms: [c57bl/6, c57bl6, c57b/6, c57bl, b6, c57 black 6, c57bl/6 background]
+  BALB/c:
+    synonyms: [balb/c, balbc, balb/cj, balb/cbyj]
+  DBA/2:
+    synonyms: [dba/2j, dba2, dba/2]
+  "129":
+    synonyms: [129sv, 129/sv, 129s1, 129s6, 129x1]
+  FVB/N:
+    synonyms: [fvb, fvb/nj, fvb/n]
+  CD-1:
+    synonyms: [cd1, cd-1 igs, icr]
+  SAMP8:
+    synonyms: [samp8, senescence accelerated mouse prone 8, samp-8]
+  SAMR1:
+    synonyms: [samr1, senescence accelerated mouse resistant 1]
+
+# Words that mark a genotype or treatment value as the control group.
+control_genotype_terms: [wild type, wild-type, wildtype, wt, control, ctrl, non-transgenic, nontransgenic, ntg, littermate control, wt littermate, "+/+", normal]
+# Treatment values are compared whole, without accents; "None/naïve" is read as two control words.
+control_treatment_terms: [vehicle, pbs, saline, control, ctrl, ctr, con, untreated, not treated, non treated, nontreated, none, no treatment, sham, mock, dmso, naive, water, unstimulated, baseline]
+
+# Words that describe how a sample was obtained.
+isolation_terms: [sorted, facs, macs, flow cytometry, magnetic beads, magnetic-activated, isolated, purified, percoll, immunopanning, cd11b, cd11b+, cx3cr1, tmem119, p2ry12, cd45lo, cd45int]
+ipsc_terms: [ipsc, ipscs, hipsc, induced pluripotent, imgl, imgls, ipsc-derived, ipsc derived, esc-derived]
+organoid_terms: [organoid, organoids, assembloid, assembloids, spheroid]
+culture_terms: [primary culture, cultured, in vitro, culture, cell culture]
+pooled_terms: [pooled, pool, pools, pool of]
+single_cell_terms: [single cell, single-cell, scrna-seq, scrnaseq, scrna, snrna-seq, snrnaseq, snrna, single nucleus, single-nucleus, single nuclei, 10x genomics, 10x chromium, drop-seq, dropseq, smart-seq2, smart-seq, cite-seq, split-seq, sci-rna-seq, transcriptomic single cell]
+# Per-cell quality-control field names. Plate-based studies list every cell as a sample and report these,
+# even when their library source only says "transcriptomic". Compared with the whole field name.
+single_cell_qc_keys: [ngene, ngenes, n genes, numi, numis, n umi, percentmito, percent mito, percent.mito, percent.mt, ncount rna, nfeature rna]

@@ -1,0 +1,75 @@
+# Dataset Scout run configuration
+#
+# One file = one scientific question. Everything that changes the result
+# lives here, so a scientist can review the assumptions without reading code.
+# Check what this file resolves to (no internet needed):
+#     scout config config/microglia_aging.yaml
+
+name: microglia-aging
+
+description: >
+  Which public mouse datasets can support a young-versus-old comparison
+  of microglial gene expression?
+
+# Marks the report as a portfolio demonstration on public data.
+demo: true
+
+query:
+  # GEO DataSets search syntax (the same as the search box on the GEO website).
+  terms: (microglia OR microglial) AND (aging OR ageing OR aged OR "old mice")
+  organism: Mus musculus
+  # Optional publication window, e.g. "2015" or "2015/01/01".
+  published_from: null
+  published_to: null
+
+limits:
+  # Maximum number of GEO series to retrieve. Use --max-studies 5 for a quick test.
+  max_studies: 500
+
+scope:
+  organisms: [Mus musculus]
+  data_types: [bulk RNA-seq, single-cell RNA-seq, microarray]
+  # A SuperSeries only groups other series; its SubSeries are assessed instead.
+  exclude_superseries: true
+
+design:
+  type: age_contrast
+  # Young and old groups need at least this many baseline samples each.
+  min_per_group: 3
+
+# Age groups in months. Mouse: 1.5-6 months is young adult, 18+ is old
+# (a common convention in aging research; change it if your lab uses another).
+age_groups:
+  Mus musculus:
+    young_min_months: 1.5
+    young_max_months: 6
+    old_min_months: 18
+
+harmonize:
+  # Read ages or sex from sample titles when no explicit field exists.
+  # Values found this way are flagged as inferred in every output.
+  age_fallback: true
+  sex_fallback: true
+
+scoring:
+  # Must add up to 1.0.
+  weights:
+    metadata_completeness: 0.40
+    design_fit: 0.30
+    data_type_fit: 0.15
+    traceability: 0.15
+  data_type_fit:
+    bulk RNA-seq: 1.0
+    single-cell RNA-seq: 0.8
+    microarray: 0.6
+  usable_threshold: 60
+  ready_threshold: 75
+
+geo:
+  # brief = sample metadata only (no data tables): fastest, and all we need.
+  view: brief
+
+report:
+  author: Facundo Dallo
+  # Fill in after publishing the repository, e.g. https://github.com/<user>/dataset-scout
+  project_url: null

@@ -1,0 +1,416 @@
+{
+  "lineage": {
+    "run_id": "microglia-aging-20260917T004104Z",
+    "started_at": "2026-09-17T00:41:04+00:00",
+    "finished_at": "2026-09-17T00:41:27+00:00",
+    "mode": "auto",
+    "tool_version": "0.1.0",
+    "python": "3.14.7",
+    "platform": "Windows-11-10.0.26200-SP0",
+    "packages": {
+      "pandas": "3.0.5",
+      "duckdb": "1.5.5",
+      "requests": "2.34.2",
+      "PyYAML": "6.0.3",
+      "Jinja2": "3.1.6",
+      "openpyxl": "3.1.5"
+    },
+    "config_name": "microglia-aging",
+    "config_file": "config/microglia_aging.yaml",
+    "config_sha256": "c40d6430ab714a7a46cff6ed04773bdb1931244d698f8d5779a23b74b61151e1",
+    "search_term": "((microglia OR microglial) AND (aging OR ageing OR aged OR \"old mice\")) AND GSE[ETYP] AND \"Mus musculus\"[Organism]",
+    "snapshot_dir": "snapshots/microglia-aging",
+    "snapshot_index": "snapshots/microglia-aging/snapshot_index.csv",
+    "http": {
+      "replayed": 357,
+      "downloaded": 0,
+      "retries": 0
+    },
+    "vocabulary": "package:vocabulary.yaml"
+  },
+  "summary": {
+    "search_count": 415,
+    "retrieved": 415,
+    "n_studies": 415,
+    "n_in_scope": 351,
+    "n_with_age": 201,
+    "n_contrast": 50,
+    "n_usable": 153,
+    "n_ready": 53,
+    "n_contrast_usable": 50,
+    "n_samples_scope": 27240,
+    "n_expression_samples": 27004,
+    "funnel": [
+      {
+        "label": "Matched the search",
+        "count": 415
+      },
+      {
+        "label": "Retrieved for review",
+        "count": 415
+      },
+      {
+        "label": "In scope",
+        "count": 351
+      },
+      {
+        "label": "Report sample ages",
+        "count": 201
+      },
+      {
+        "label": "Young and old, at least 3 each",
+        "count": 50
+      },
+      {
+        "label": "...and score 60 or more",
+        "count": 50
+      }
+    ],
+    "completeness": [
+      {
+        "label": "Age, from an age field",
+        "share": 0.24755591764183085
+      },
+      {
+        "label": "Age, read from titles or labels",
+        "share": 0.014738557250777662
+      },
+      {
+        "label": "Sex",
+        "share": 0.7362612946230188
+      },
+      {
+        "label": "Tissue or cell type",
+        "share": 0.9892608502444082
+      },
+      {
+        "label": "Strain or genotype",
+        "share": 0.8844245296993039
+      }
+    ],
+    "distinct_keys": 155,
+    "distinct_age_keys": 13,
+    "distinct_age_strings": 555,
+    "top_keys": [
+      {
+        "value": "age",
+        "count": 21568,
+        "field": "age"
+      },
+      {
+        "value": "genotype",
+        "count": 21315,
+        "field": "genotype"
+      },
+      {
+        "value": "sex",
+        "count": 18943,
+        "field": "sex"
+      },
+      {
+        "value": "lane",
+        "count": 15372,
+        "field": NaN
+      },
+      {
+        "value": "ngene",
+        "count": 15360,
+        "field": NaN
+      },
+      {
+        "value": "plate",
+        "count": 15360,
+        "field": NaN
+      },
+      {
+        "value": "numi",
+        "count": 12288,
+        "field": NaN
+      },
+      {
+        "value": "percentmito",
+        "count": 12288,
+        "field": NaN
+      },
+      {
+        "value": "set",
+        "count": 12288,
+        "field": NaN
+      },
+      {
+        "value": "tissue",
+        "count": 6780,
+        "field": "tissue"
+      },
+      {
+        "value": "cell type",
+        "count": 6097,
+        "field": "cell_type"
+      },
+      {
+        "value": "treatment",
+        "count": 4116,
+        "field": "treatment"
+      },
+      {
+        "value": "strain",
+        "count": 3685,
+        "field": "strain"
+      },
+      {
+        "value": "nreads",
+        "count": 3072,
+        "field": NaN
+      },
+      {
+        "value": "plateplus",
+        "count": 3072,
+        "field": NaN
+      }
+    ],
+    "unreadable_ages": [
+      {
+        "value": "12",
+        "count": 3075
+      },
+      {
+        "value": "3",
+        "count": 3075
+      },
+      {
+        "value": "6",
+        "count": 3072
+      },
+      {
+        "value": "21",
+        "count": 3072
+      },
+      {
+        "value": "18",
+        "count": 2307
+      },
+      {
+        "value": "17",
+        "count": 768
+      },
+      {
+        "value": "postnatal d1-3",
+        "count": 24
+      },
+      {
+        "value": "24",
+        "count": 3
+      },
+      {
+        "value": "5.49668874172185",
+        "count": 1
+      }
+    ],
+    "unmapped_tissues": [
+      {
+        "value": "microglia",
+        "count": 98
+      },
+      {
+        "value": "Microglia",
+        "count": 88
+      },
+      {
+        "value": "CNS",
+        "count": 44
+      },
+      {
+        "value": "primary microglia",
+        "count": 24
+      },
+      {
+        "value": "Sorted microglia",
+        "count": 24
+      },
+      {
+        "value": "RPE",
+        "count": 23
+      },
+      {
+        "value": "Microglia (FACS-purified)",
+        "count": 22
+      },
+      {
+        "value": "SAMP8",
+        "count": 21
+      },
+      {
+        "value": "superior frontal gyrus",
+        "count": 15
+      },
+      {
+        "value": "Primary microglia",
+        "count": 14
+      }
+    ],
+    "unmapped_cell_types": [
+      {
+        "value": "Old_NSC",
+        "count": 133
+      },
+      {
+        "value": "CD11b+ cells",
+        "count": 62
+      },
+      {
+        "value": "unannotated",
+        "count": 53
+      },
+      {
+        "value": "GFP+",
+        "count": 49
+      },
+      {
+        "value": "Bulk",
+        "count": 47
+      },
+      {
+        "value": "Brain cells",
+        "count": 43
+      },
+      {
+        "value": "Brain tissue",
+        "count": 36
+      },
+      {
+        "value": "Endothelial",
+        "count": 34
+      },
+      {
+        "value": "Peritoneal cells",
+        "count": 31
+      },
+      {
+        "value": "whole tissue",
+        "count": 29
+      }
+    ],
+    "data_types": [
+      {
+        "value": "bulk RNA-seq",
+        "count": 187
+      },
+      {
+        "value": "single-cell RNA-seq",
+        "count": 135
+      },
+      {
+        "value": "microarray",
+        "count": 29
+      }
+    ],
+    "sample_types": [
+      {
+        "value": "tissue",
+        "count": 18798
+      },
+      {
+        "value": "isolated cells",
+        "count": 6937
+      },
+      {
+        "value": "primary culture",
+        "count": 908
+      },
+      {
+        "value": "not stated",
+        "count": 219
+      },
+      {
+        "value": "cell line",
+        "count": 133
+      },
+      {
+        "value": "iPSC-derived",
+        "count": 9
+      }
+    ],
+    "exclusions": [
+      {
+        "value": "data type out of scope",
+        "count": 44
+      },
+      {
+        "value": "SuperSeries",
+        "count": 20
+      }
+    ],
+    "findings": [
+      "50 of 351 in-scope studies (14.2%) include both young and old baseline samples with at least 3 per group.",
+      "Age can be read for 26.2% of 27004 expression samples; it was written as 555 different strings under 13 different field names.",
+      "26.4% of expression samples do not state sex.",
+      "8 in-scope studies use cell lines rather than primary tissue or cells, which a keyword search alone does not reveal.",
+      "Submitters used 155 distinct field names across 27240 samples."
+    ]
+  },
+  "checks": [
+    {
+      "name": "search_returned_studies",
+      "status": "pass",
+      "detail": "415 series matched; 415 retrieved."
+    },
+    {
+      "name": "summary_schema",
+      "status": "pass",
+      "detail": "All expected fields are present in the NCBI study summaries."
+    },
+    {
+      "name": "unique_study_ids",
+      "status": "pass",
+      "detail": "Every series appears once."
+    },
+    {
+      "name": "sample_metadata_retrieved",
+      "status": "warn",
+      "detail": "Sample metadata could not be retrieved for 1 series: GSE289098. They stay in the ranking with a low score and the flag 'no_samples_retrieved'."
+    },
+    {
+      "name": "sample_counts_match",
+      "status": "pass",
+      "detail": "Sample counts match GEO for all 350 retrieved series."
+    },
+    {
+      "name": "links_are_consistent",
+      "status": "pass",
+      "detail": "All 27246 series-sample links resolve."
+    },
+    {
+      "name": "sample_records_consistent",
+      "status": "pass",
+      "detail": "Samples shared between series are described identically."
+    },
+    {
+      "name": "scores_in_range",
+      "status": "pass",
+      "detail": "All 351 scores are between 0 and 100."
+    },
+    {
+      "name": "ages_readable",
+      "status": "warn",
+      "detail": "15397 of 22480 written ages (68%) could not be converted to months; they are listed in the curator inbox."
+    },
+    {
+      "name": "vocabulary_coverage",
+      "status": "pass",
+      "detail": "97% of samples with a written tissue or cell type map to the controlled vocabulary (9271 of 9528)."
+    }
+  ],
+  "validation": null,
+  "outputs": {
+    "database": "dataset_scout.duckdb",
+    "report": "report.html",
+    "one_pager": "one_pager.html",
+    "exports": [
+      "data_checks.csv",
+      "needs_review.csv",
+      "samples_harmonized.csv",
+      "studies_all.csv",
+      "studies_ranked.csv"
+    ]
+  }
+}

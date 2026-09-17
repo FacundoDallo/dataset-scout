@@ -1,0 +1,318 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="generator" content="Dataset Scout {{ tool_version }}">
+<title>{{ question }} | Dataset Scout</title>
+<style>
+{% include "_styles.css.j2" %}
+
+.page { max-width: 1060px; margin: 0 auto; padding: 2.5rem 1.5rem 4rem; }
+header.masthead { border-bottom: 1px solid var(--rule); padding-bottom: 1.75rem; margin-bottom: 2rem; }
+.masthead .tool { color: var(--muted); font-size: 0.9rem; margin-bottom: 1.25rem; }
+.masthead h1 { font-size: clamp(1.7rem, 3.4vw, 2.45rem); max-width: 30ch; margin-bottom: 1rem; }
+.masthead .answer { font-size: 1.2rem; max-width: 60ch; margin-bottom: 0.6rem; }
+section { margin: 0 0 2.75rem; }
+section > h2 { margin-bottom: 0.4rem; }
+section > .lede { color: var(--muted); margin-bottom: 1.1rem; }
+.split { display: table; width: 100%; table-layout: fixed; }
+.split > div { display: table-cell; vertical-align: top; }
+.split > div + div { padding-left: 2rem; }
+@media (max-width: 720px) { .split, .split > div { display: block; padding-left: 0 !important; } .split > div + div { margin-top: 1.5rem; } }
+.findings { margin: 0; padding-left: 1.2rem; max-width: 75ch; }
+.findings li { margin-bottom: 0.45rem; }
+details > summary { cursor: pointer; color: var(--hema); margin: 0.9rem 0 0.6rem; }
+footer { border-top: 1px solid var(--rule); padding-top: 1rem; color: var(--muted); font-size: 0.85rem; }
+</style>
+</head>
+<body>
+<div class="page">
+
+<header class="masthead">
+  <p class="tool">Dataset Scout report for the run <strong>{{ config.name }}</strong>{% if author %}, prepared by {{ author }}{% endif %}.</p>
+  <h1>{{ question }}</h1>
+  <p class="answer">{{ headline }}</p>
+  <p class="muted small">
+    Built on {{ lineage.finished_at[:10] }} from {{ summary.search_count | num }} GEO series that matched the search
+    ({{ summary.retrieved | num }} retrieved, {{ summary.n_expression_samples | num }} expression samples harmonized).
+    {% if config.is_demo %}This is a portfolio demonstration on public metadata, not a client deliverable.{% endif %}
+  </p>
+  {% if status_counts.fail %}
+  <p class="note">{{ status_counts.fail }} automated {{ plural(status_counts.fail, "check") }} failed. Treat the numbers below with caution and see the checks section.</p>
+  {% endif %}
+</header>
+
+<section aria-labelledby="cascade-title">
+  <h2 id="cascade-title">Screening cascade</h2>
+  <p class="lede">Like a compound screen, every study passes a sequence of filters. The bars show how many survive each one.</p>
+  <table class="cascade">
+    {% for step in cascade %}
+    <tr>
+      <td class="label">{{ step.label }}</td>
+      <td><span class="track" aria-hidden="true"><span class="bar" style="width: {{ '%.1f' | format(step.width) }}%"></span></span></td>
+      <td class="count">{{ step.count | num }}</td>
+      <td class="dropped">{% if step.dropped %}&minus;{{ step.dropped | num }}{% endif %}</td>
+    </tr>
+    {% endfor %}
+  </table>
+</section>
+
+<section aria-labelledby="findings-title">
+  <h2 id="findings-title">What the run found</h2>
+  <ul class="findings">
+    {% for finding in summary.findings %}
+    <li>{{ finding }}</li>
+    {% else %}
+    <li>No in-scope studies, so there is nothing to summarize yet.</li>
+    {% endfor %}
+  </ul>
+</section>
+
+<section aria-labelledby="shortlist-title">
+  <h2 id="shortlist-title">Shortlist</h2>
+  <p class="lede">
+    In-scope studies scoring {{ config.usable_threshold | num }} or more, best first.
+    Scores of {{ config.ready_threshold | num }} or more are marked ready; the rest are usable after curation.
+  </p>
+  {% macro study_table(rows, caption) %}
+  <div class="table-scroll">
+  <table class="data">
+    <caption>{{ caption }}</caption>
+    <thead>
+      <tr>
+        <th class="num">#</th>
+        <th style="width: 30%">Study</th>
+        <th style="width: 10%">Data</th>
+        <th class="num">Young</th>
+        <th class="num">Old</th>
+        <th class="num">Ages (months)</th>
+        <th>Sex</th>
+        <th class="num">Complete</th>
+        <th class="num">Score</th>
+        <th style="width: 9%">Tier</th>
+        <th style="width: 14%">Watch out for</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for row in rows %}
+      <tr>
+        <td class="num">{{ row.rank }}</td>
+        <td>
+          <a class="accession" href="{{ row.geo_url }}">{{ row.gse }}</a>{% if row.published_year %} <span class="muted small">{{ row.published_year }}</span>{% endif %}
+          <span class="study-title">{{ row.title }}</span>
+          {% if row.cell_types or row.tissues %}<span class="muted small">{{ row.cell_types or '' }}{% if row.cell_types and row.tissues %}; {% endif %}{{ row.tissues or '' }}</span>{% endif %}
+        </td>
+        <td>{{ row.data_type }}<br><span class="muted small">{{ row.n_samples | num }} samples</span></td>
+        <td class="num">{{ row.n_young | num }}</td>
+        <td class="num">{{ row.n_old | num }}</td>
+        <td class="num">{% if row.age_min_months is not none %}{{ row.age_min_months | months }}&ndash;{{ row.age_max_months | months }}{% else %}&ndash;{% endif %}</td>
+        <td>{{ row.sexes or "not stated" }}</td>
+        <td class="num">{{ row.metadata_completeness | pct }}</td>
+        <td class="num">
+          <span class="score-num">{{ '%.0f' | format(row.score or 0) }}</span><span class="meter" aria-hidden="true"><span style="width: {{ '%.0f' | format(row.score or 0) }}%"></span></span>
+        </td>
+        <td><span class="tier tier-{{ row.tier_class }}">{{ row.tier }}</span></td>
+        <td class="flags">
+          {% for flag in row.flag_list %}<span title="{{ flag.description }}">{{ flag.label }}</span>{% if not loop.last %}, {% endif %}{% else %}nothing flagged{% endfor %}
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  </div>
+  {% endmacro %}
+  {% if shortlist %}
+    {{ study_table(shortlist, shortlist | length ~ " usable " ~ plural(shortlist | length, "study", "studies")) }}
+  {% else %}
+    <p class="note">No in-scope study reaches the usable threshold. The table below lists them all so you can see what is missing.</p>
+  {% endif %}
+  {% if others %}
+  <details {% if not shortlist %}open{% endif %}>
+    <summary>Show the other {{ others | length }} in-scope {{ plural(others | length, "study", "studies") }}</summary>
+    {{ study_table(others, "In scope but below the usable threshold") }}
+  </details>
+  {% endif %}
+</section>
+
+<section aria-labelledby="fallout-title">
+  <h2 id="fallout-title">Why studies fell out</h2>
+  <div class="split">
+    <div>
+      <h3>Out of scope before scoring</h3>
+      <table class="data">
+        <thead><tr><th>Reason</th><th class="num">Studies</th></tr></thead>
+        <tbody>
+          {% for item in summary.exclusions %}
+          <tr><td>{{ item.value }}</td><td class="num">{{ item.count | num }}</td></tr>
+          {% else %}
+          <tr><td colspan="2" class="muted">Every retrieved study was in scope.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    <div>
+      <h3>Issues among in-scope studies</h3>
+      <table class="data">
+        <thead><tr><th>Issue</th><th class="num">Studies</th></tr></thead>
+        <tbody>
+          {% for item in flag_counts %}
+          <tr><td>{{ item.label }}</td><td class="num">{{ item.count | num }}</td></tr>
+          {% else %}
+          <tr><td colspan="2" class="muted">No issues were flagged.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<section aria-labelledby="completeness-title">
+  <h2 id="completeness-title">How complete the sample metadata is</h2>
+  <p class="lede">Share of the {{ summary.n_expression_samples | num }} in-scope expression samples where each field could be read.</p>
+  <table class="meters">
+    {% for item in summary.completeness %}
+    <tr>
+      <td class="label">{{ item.label }}</td>
+      <td><span class="track" aria-hidden="true"><span class="bar" style="width: {{ '%.1f' | format(100 * item.share) }}%"></span></span></td>
+      <td class="value">{{ item.share | pct }}</td>
+    </tr>
+    {% endfor %}
+  </table>
+</section>
+
+<section aria-labelledby="mess-title">
+  <h2 id="mess-title">The mess, measured</h2>
+  <p class="lede">
+    Submitters described the same things in {{ summary.distinct_keys | num }} different field names.
+    Age alone came under {{ summary.distinct_age_keys | num }} field names, written {{ summary.distinct_age_strings | num }} different ways.
+  </p>
+  <div class="split">
+    <div>
+      <h3>Most common field names</h3>
+      <table class="data">
+        <thead><tr><th>Field name as submitted</th><th>Read as</th><th class="num">Samples</th></tr></thead>
+        <tbody>
+          {% for item in summary.top_keys %}
+          <tr><td>{{ item.value }}</td><td>{{ (item.field or "not used") | replace("_", " ") }}</td><td class="num">{{ item.count | num }}</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    <div>
+      <h3>Curator inbox</h3>
+      <p class="muted small">Values the harmonizer refused to guess. Adding them to the vocabulary or the parser raises coverage on the next run.</p>
+      <table class="data">
+        <thead><tr><th>Field</th><th>Value as submitted</th><th class="num">Samples</th></tr></thead>
+        <tbody>
+          {% for item in review_inbox %}
+          <tr><td>{{ item.field }}<br><span class="muted small">{{ item.reason | replace("_", " ") }}</span></td><td>{{ item.raw_value }}</td><td class="num">{{ item.n | num }}</td></tr>
+          {% else %}
+          <tr><td colspan="3" class="muted">Nothing is waiting for review.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<section aria-labelledby="validation-title">
+  <h2 id="validation-title">Is the harmonizer right?</h2>
+  {% if validation_rows %}
+  <p class="lede">
+    {{ validation.rows_reviewed | num }} samples, drawn at random across studies, were checked by hand without seeing the program's answers.
+    Intervals are 95% Wilson intervals.
+  </p>
+  <div class="table-scroll">
+  <table class="data">
+    <thead>
+      <tr><th>Field</th><th class="num">Reviewed</th><th class="num">Agreement</th><th class="num">95% interval</th><th class="num">Wrong</th><th class="num">Missed</th><th class="num">Invented</th></tr>
+    </thead>
+    <tbody>
+      {% for row in validation_rows %}
+      <tr>
+        <td>{{ row.label }}</td>
+        <td class="num">{{ row.n_reviewed | num }}</td>
+        <td class="num"><strong>{{ row.accuracy | pct }}</strong></td>
+        <td class="num">{{ row.ci_low | pct }}&ndash;{{ row.ci_high | pct }}</td>
+        <td class="num">{{ row.n_wrong | num }}</td>
+        <td class="num">{{ row.n_missed | num }}</td>
+        <td class="num">{{ row.n_invented | num }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  </div>
+  <p class="muted small">Wrong: both gave a value and they differ. Missed: the reviewer found a value the program did not. Invented: the program gave a value the reviewer could not find. Every disagreement is listed in <code>{{ config.validation_dir.as_posix() }}/disagreements.csv</code>.</p>
+  {% else %}
+  <p class="note neutral">
+    Not checked by hand yet. Run <code>scout review-sheet</code>, fill in the spreadsheet without looking at the program's output, then run <code>scout validate</code>. The agreement per field will appear here.
+  </p>
+  {% endif %}
+</section>
+
+<section aria-labelledby="checks-title">
+  <h2 id="checks-title">Automated checks</h2>
+  <p class="lede">{{ status_counts.pass }} passed, {{ status_counts.warn }} with warnings, {{ status_counts.fail }} failed.</p>
+  <table class="data">
+    <thead><tr><th>Check</th><th>Result</th><th>Detail</th></tr></thead>
+    <tbody>
+      {% for check in checks %}
+      <tr>
+        <td>{{ check.name | replace("_", " ") }}</td>
+        <td><span class="status status-{{ check.status }}">{{ check.status }}</span></td>
+        <td>{{ check.detail }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</section>
+
+<section aria-labelledby="method-title">
+  <h2 id="method-title">How the score works</h2>
+  <p>Each in-scope study gets four components between 0 and 1. The score is their weighted sum times 100. Weights live in the run configuration, so they can be debated and changed without touching code.</p>
+  <table class="data" style="max-width: 44rem">
+    <thead><tr><th>Component</th><th class="num">Weight</th></tr></thead>
+    <tbody>
+      {% for item in weights %}
+      <tr><td>{{ item.label }}</td><td class="num">{{ item.weight | pct }}</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  <p class="small" style="margin-top: 0.9rem">
+    Completeness is the mean share of samples with age, sex, tissue or cell type, and strain or genotype.
+    Design fit is 1 when there are at least {{ config.min_per_group }} young and {{ config.min_per_group }} old baseline samples, 0.5 when both groups exist but are smaller, and 0 otherwise.
+    Baseline means untreated and wild type; unknown counts as baseline.
+    {% if mouse_thresholds %}For mouse, young is {{ mouse_thresholds.young_min_months | months }} to {{ mouse_thresholds.young_max_months | months }} months and old is {{ mouse_thresholds.old_min_months | months }} months or more.{% endif %}
+    Data type fit:
+    {% for name, value in data_type_fit.items() %}{{ name }} {{ '%.1f' | format(value) }}{% if not loop.last %}, {% endif %}{% endfor %}.
+    Traceability adds 0.5 for a linked publication and 0.5 for referenced raw data.
+  </p>
+</section>
+
+<section aria-labelledby="limits-title">
+  <h2 id="limits-title">Limits and related work</h2>
+  <ul class="findings">
+    <li>Only metadata is assessed. Expression values, batch effects and sequencing quality are not checked.</li>
+    <li>Harmonization uses rules and a small controlled vocabulary. It favours leaving a value empty over guessing, so coverage is lower than recall-oriented tools and every value can be traced to its rule.</li>
+    <li>Ontology identifiers were entered by hand and should be confirmed against the EBI Ontology Lookup Service before downstream use.</li>
+    <li>GEO search ranks by its own relevance. Studies that describe the topic with other words are not found.</li>
+    <li>MetaSRA and refine.bio already normalize public sample metadata at scale. Dataset Scout does not replace them: it answers one question at a time, with transparent, configurable scoring and a manual check of its own accuracy.</li>
+  </ul>
+</section>
+
+<footer>
+  <dl class="facts">
+    <dt>Run</dt><dd>{{ lineage.run_id }} ({{ lineage.mode }} mode)</dd>
+    <dt>Started and finished</dt><dd>{{ lineage.started_at }} to {{ lineage.finished_at }}</dd>
+    <dt>Search</dt><dd>{{ lineage.search_term }}</dd>
+    <dt>Configuration</dt><dd>{{ lineage.config_file or config.name }} (SHA-256 {{ lineage.config_sha256[:12] }})</dd>
+    <dt>Snapshot</dt><dd>{{ lineage.snapshot_dir }}: {{ lineage.http.downloaded | num }} downloaded, {{ lineage.http.replayed | num }} replayed, {{ lineage.http.retries | num }} retries</dd>
+    <dt>Software</dt><dd>Dataset Scout {{ lineage.tool_version }}, Python {{ lineage.python }}, pandas {{ lineage.packages.pandas }}, DuckDB {{ lineage.packages.duckdb }}</dd>
+    {% if project_url %}<dt>Code</dt><dd><a href="{{ project_url }}">{{ project_url }}</a></dd>{% endif %}
+  </dl>
+</footer>
+
+</div>
+</body>
+</html>
